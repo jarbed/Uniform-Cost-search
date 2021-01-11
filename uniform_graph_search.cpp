@@ -11,30 +11,28 @@ class node{
 };
 struct Comparecost { 
     bool operator()(node const& p1, node const& p2) 
-    { 
-        // return "true" if "p1" is ordered  
-        // before "p2", for example: 
+    {
         return p1.cost > p2.cost; 
     } 
 };   
 priority_queue<node, vector<node>, Comparecost> frontier;
 class graph{
     public:
-    vector<vector<pair<int,double>>> adj_list;
-    vector<string> labels;
-    graph(char* inf,char* lab){
+    vector<vector<pair<int,double>>> adj_list; // adjacency list to store graph
+    vector<string> labels;  // labels for the vertices
+    graph(char* inf,char* lab){ // constructor
         vector<set<pair< int,double>>> link;
         ifstream finput;
         finput.open(inf,fstream::in);
         while(!finput.eof()){
             int src,dest;
             double weight=1;
-            if(weighted)
+            if(weighted)    // if the graph is weighted
                 finput>>src>>dest>>weight;
             else
                 finput>>src>>dest;
             if(finput){
-                if (link.size()<=max(src,dest)+1) {
+                if (link.size()<=max(src,dest)+1) { //resize the list for storing a vertex with greater id then the adj_list.size() needs to be strored
                     link.resize(max(src,dest)+1);
                 }
                 link[src].insert(make_pair(dest,weight));
@@ -50,7 +48,7 @@ class graph{
             }
             adj_list.push_back(lst);
         }
-        if(label!=NULL){
+        if(label!=NULL){    // if label file is provided
             finput.open(lab,fstream::in);
             string s;
             while(getline(finput,s)){
@@ -59,7 +57,7 @@ class graph{
             }
         }
     }
-    void show_labels(){
+    void show_labels(){ // show the labels of the vertices by there indices
         for(int i=0;i<labels.size();i++){
             cout<<i+ind<<" "<<labels[i]<<endl;
         }
@@ -121,16 +119,16 @@ void init(int argc,char **argv){
                 infile = argv[i+1];
                 i++;
                 break;
-            case 'w' :
+            case 'w' : // set graph as weighted
                 weighted = true;
                 break;
-            case 'd' :
+            case 'd' :  //set graph as directed
                 directed = true;
                 break;
-            case 'z' :
+            case 'z' :  //set the starting index to 0
                 ind=0;
                 break;
-            case 'l' :
+            case 'l' :  //label file provided
                 if (i==argc-1){
                     cout<<"label file missing"<<endl;
                     exit(0);
@@ -152,13 +150,13 @@ int main(int argc,char **argv){
         exit(0);
     }
     graph g(infile,label);
-    g.show_labels();
+    g.show_labels();    //shows the label for the vertices if provided
     while(1){
         cout<<"enter source : ";
         cin>>src;
         cout<<"enter destination : ";
         cin>>dest;
-        if(src>=ind&&src<g.adj_list.size()&&dest>=ind&&dest<g.adj_list.size()){
+        if(src>=ind&&src<g.adj_list.size()&&dest>=ind&&dest<g.adj_list.size()){ // check for source and destination within the bound 
             ufc(src,dest,g);
             break;
         }
